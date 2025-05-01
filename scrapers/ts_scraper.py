@@ -11,6 +11,7 @@ import random
 
 
 def ts_scraper(url):
+    """Web scraper designed to retrieve relevant review information from TheStage"""
     try:
         time.sleep(random.uniform(1.5, 3.5))
 

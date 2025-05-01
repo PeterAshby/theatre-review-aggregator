@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 def wos_scraper(url):
+    """Web scraper designed to retrieve relevant review information from WhatsOnStage"""
     try:
         # Get HTML
         res = requests.get(url)

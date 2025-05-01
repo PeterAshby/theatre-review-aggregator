@@ -8,6 +8,7 @@ from datetime import datetime
 import pandas as pd
 
 def lt1_scraper(url):
+    """Web scraper designed to retrieve relevant review information from LondonTheatre1"""
     try:
         # Set up headless Chrome
         options = Options()

@@ -6,6 +6,7 @@ from sentiment_analysis.sentiment_analysis import analyse_review
 import pandas as pd
 
 def insert_reviews(df):
+    """Calls SQL integration functions and inserts the clean, processed reviews into MySQL"""
     conn = connect_to_db()
     cursor = conn.cursor()
     reviews_added = 0
@@ -28,6 +29,7 @@ def insert_reviews(df):
 
     return reviews_added
 def process_reviews(urls, scraper):
+    """Calls the VADER analysis, and the designated scraper to attain the dataframe that will be inserted"""
     data = []
     total = len(urls)
 
@@ -51,6 +53,7 @@ def process_reviews(urls, scraper):
     df = df.dropna(subset=['Show Name', 'Venue', 'Date', 'Rating', 'Source'])
     return df
 def pipeline(reviews_csv, scraper):
+    """Simple pipeline setup aggregating all the functions"""
     # Read
     df = pd.read_csv(reviews_csv)
     review_urls = df['Review URL'].tolist()

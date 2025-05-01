@@ -24,13 +24,14 @@ LT1_REVIEW_URLS_PATH = os.path.join(DATA_DIR, 'lt1_review_urls.csv')
 LT1_REVIEW_URLS_ARCHIVE_PATH = os.path.join(DATA_DIR, 'lt1_review_urls_archive.csv')
 
 def load_url_archive_csv(csv_file):
+    """Convenience function that allows loading of ALL previous reviews"""
     try:
         df = pd.read_csv(csv_file)
         return set(df['Review URL'].dropna().str.strip())
     except FileNotFoundError:
         return set()
 def get_review_links_WOS(max_clicks=1):
-    # Load existing archive
+    """Loads first and second pages of new reviews on WhatsOnStage, and collects the urls to pass to the scraper"""
     archived_urls = load_url_archive_csv(WOS_REVIEW_URLS_ARCHIVE_PATH)
 
     options = Options()
@@ -59,7 +60,7 @@ def get_review_links_WOS(max_clicks=1):
 
     driver.quit()
 
-    # Save the *new* URLs to the working file
+    # Save the new URLs to the working file
     if new_urls:
         df_new = pd.DataFrame(new_urls, columns=['Review URL'])
         df_new.to_csv(WOS_REVIEW_URLS_PATH, index=False)
@@ -76,7 +77,7 @@ def get_review_links_WOS(max_clicks=1):
 
     return list(new_urls)
 def get_review_links_TS(max_clicks=1):
-    # Load existing archive
+    """As above but for TheStage"""
     archived_urls = load_url_archive_csv(TS_REVIEW_URLS_ARCHIVE_PATH)
 
     options = Options()
@@ -139,19 +140,15 @@ def get_review_links_TS(max_clicks=1):
         print("No new 'The Stage' URLs found. Working file and archive left unchanged.")
     return list(new_urls)
 def get_review_links_lt1(max_pages=1):
+    """As above but for LondonTheatre1"""
     base_url = "https://www.londontheatre1.com/reviews/page/"
 
-    # Load archived URLs from CSV
     df_archive = pd.read_csv(LT1_REVIEW_URLS_ARCHIVE_PATH)
     archived_urls = set(df_archive['Review URL'].tolist())
-
-    # Set up Chrome options to run headlessly (no GUI)
     chrome_options = Options()
     chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-gpu")  # Disables GPU hardware acceleration
+    chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
-
-    # Set up the Chrome WebDriver (automatically manage the driver version)
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
     new_urls = set()
